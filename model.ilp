@@ -1,0 +1,24 @@
+\ Model MIQP_DNR_copy
+\ LP format - for model browsing. Use MPS format to capture full model detail.
+Minimize
+ 
+Subject To
+ R15: a(1,_2) + a(1,_3) + a(2,_1) + a(3,_1) + a(2,_3) + a(3,_2) = 2
+ R16: - a(1,_2) + b(1,_2) + b(2,_1) = 0
+ R17: - a(1,_3) + b(1,_3) + b(3,_1) = 0
+ R18: b(1,_2) - a(2,_1) + b(2,_1) = 0
+ R19: b(1,_3) - a(3,_1) + b(3,_1) = 0
+ R20: - a(2,_3) + b(2,_3) + b(3,_2) = 0
+ R21: b(2,_3) - a(3,_2) + b(3,_2) = 0
+ R22: b(2,_1) + b(2,_3) = 1
+ R23: b(3,_1) + b(3,_2) = 1
+Bounds
+ a(1,_2) free
+ a(1,_3) free
+ a(2,_1) free
+ a(3,_1) free
+ a(2,_3) free
+ a(3,_2) free
+Binaries
+ b(1,_2) b(1,_3) b(2,_1) b(3,_1) b(2,_3) b(3,_2)
+End
