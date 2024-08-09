@@ -1,6 +1,11 @@
 ## MISOCP implementation of the following paper:
 # Value of Distribution Network Reconfiguration in Presence of Renewable Energy Resources - II.B.
 
+# Infeasiblity Scenarios
+# 1. Large or small Sbase value
+# 2. Large or small M values
+# try relaxing constraint for 
+
 #%%
 
 import gurobipy as gp
@@ -46,7 +51,6 @@ for idx in net.line.index:
     X[(col.from_bus, col.to_bus)] = col.x_ohm_per_km*col.length_km/Zbase
     X[(col.to_bus, col.from_bus)] = col.x_ohm_per_km*col.length_km/Zbase
     
-# switch 만 연결된 line 도 line임
 
 for idx in net.switch.index:
     col = net.switch.loc[idx]
@@ -130,8 +134,8 @@ AdjacencyList = build_adjacency_list(Lines)
 P = dict()
 Q = dict()
 for bus in Buses:
-    P[bus] = 0.01#*1000/Sbase
-    Q[bus] = 0.01#*1000/Sbase # 0.001 results in isolation
+    P[bus] = 0.0001#*1000/Sbase
+    Q[bus] = 0.0001#*1000/Sbase # 0.001 results in isolation
 
 for idx in net.load.index:
     bus = net.load.bus.loc[idx]
@@ -193,11 +197,12 @@ for bus in SubstationBuses:
     model.addConstr(
         sum(q[(bus, adjbus)] for adjbus in AdjacencyList[bus]) == Q[bus]
     )
-M = 100000
+M = 100000 # i dont know why, but having larger M value results in infeasible situation.
+# WhY? beacuse larger M value results in  M having large value
  
 for line in Lines:  # eq 19
     model.addConstr(
-        l[line] <= M*z[line]
+        l[line] <= M*z[line] 
     )
 
 model.addConstr( # Radiality eq 14 (modified)
@@ -207,6 +212,10 @@ model.addConstr( # Radiality eq 14 (modified)
 for line in Switches:
     model.addConstr(
         z[line] + z[tuple(reversed(line))] <= 1
+    )
+for line in NoSwitches:
+    model.addConstr(
+        z[line] + z[tuple(reversed(line))] == 1
     )
 ##################
 # SOCP flow equations

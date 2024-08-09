@@ -20,19 +20,13 @@ def ieee123(with_der = True):
     line_data = pd.read_excel('IEEE123Node/line data.xls')
     line_config = pd.read_excel('IEEE123Node/line config.xls')
 
-
-
-
     net = pp.create_empty_network(name = 'IEEE123')
-
     for i in range(len(line_config)):
         pp.create_std_type(net, dict(line_config[line_config.columns[1:]].iloc[i]), name = line_config.name[i], element = 'line')
 
     bus_set = set(line_data[line_data.columns[0]]).union(set(line_data[line_data.columns[1]]))
     for i in bus_set:
         pp.create_bus(net, vn_kv = 4.16, name = f'{i}', id = i)
-        
-
     ## external grid
     ext1 = pp.create_bus(net, vn_kv = 4.16, name = '150', id = 150)
     ext2 = pp.create_bus(net, vn_kv = 4.16, name = '233', id = 233)
